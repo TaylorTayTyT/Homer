@@ -1,13 +1,15 @@
-function App() {
+import TextEditor from "./Editor";
+import { invoke } from "@tauri-apps/api/core";
+export default function App(){
+    invoke("get_book_parts").then(res => console.log(res)).catch(e => console.log(e))
+    return(
+        <div id = "container">
+            <div id = "file_system">
 
-
-  return (
-    <>
-    <h1>TinyMCE Quick Start Guide</h1>
-    <form method="post">
-      <textarea id="mytextarea">Hello, World!</textarea>
-    </form></>
-  )
+            </div>
+            <div id = "text_editor">
+                <TextEditor/>
+            </div>
+        </div>
+    )
 }
-
-export default App;
