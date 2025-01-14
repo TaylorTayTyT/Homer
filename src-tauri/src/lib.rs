@@ -1,8 +1,7 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-use std::collections::HashMap;
-use std::fs::{self, DirEntry};
-use std::{string, vec}; 
+use std::fs::{self};
 use walkdir::WalkDir;
+use serde_json::{Map, Value};
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
@@ -16,27 +15,66 @@ fn get_book_parts() -> Vec<String> {
     }
     paths_string
 }
-pub fn recursive_directory_traversal() -> Vec<&Vec<&str>>{
+#[tauri::command]
+fn recursive_directory_traversal() -> Value {
     let start_dir = "./src/Homer";
-    let mut file_contents: Vec<&Vec<&str>> = vec![];
-    for entry in WalkDir::new(start_dir).into_iter().filter_map(|e| e.ok()) {
-        // Print the path of each entry
-        let mut string_vec: Vec<&str> = vec![];
-        let revised_entry: Vec<&str> = entry.path().to_str().unwrap().split("\\").collect();
-        let desired_str: Vec<&str> = revised_entry.splice(1.., []).collect();
+    let mut directory_tree: Map<String, Value> = Map::new();
 
-        if(entry.path().is_file()){
-            file_contents.push(&desired_str);
+    for entry in WalkDir::new(start_dir).into_iter().filter_map(|e| e.ok()) {
+        if let Some(path_str) = entry.path().to_str() {
+            let path_components: Vec<&str> = path_str
+                .split(std::path::MAIN_SEPARATOR.to_string().as_str())
+                .collect();
+
+            // Insert the path into the directory tree
+            insert_into_tree(&mut directory_tree, &path_components, entry.path().is_file());
         }
-    file_contents
+    }
+
+    Value::Object(directory_tree)
+}
+
+/// Recursively inserts files and directories into the tree structure
+fn insert_into_tree(
+    tree: &mut Map<String, Value>, 
+    path_components: &[&str], 
+    is_file: bool,
+) {
+    if path_components.is_empty() {
+        return;
+    }
+
+    let current = path_components[0];
+    if path_components.len() == 1 {
+        if is_file {
+            // Add the file to the current directory
+            tree.entry(current.to_string())
+                .or_insert_with(|| Value::String(current.to_string()));
+        }
+    } else {
+        // Create or retrieve the subdirectory
+        let subtree = tree
+            .entry(current.to_string())
+            .and_modify(|value| {
+                if !value.is_object() {
+                    *value = Value::Object(Map::new());
+                }
+            })
+            .or_insert_with(|| Value::Object(Map::new()))
+            .as_object_mut()
+            .unwrap();
+
+        insert_into_tree(subtree, &path_components[1..], is_file);
     }
 }
+
+
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, get_book_parts])
+        .invoke_handler(tauri::generate_handler![greet, get_book_parts, recursive_directory_traversal])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -1,7 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-
+use serde_json::json;
 fn main() {
-    //homer_lib::run()
-    homer_lib::recursive_directory_traversal();
+    homer_lib::run();
 }
