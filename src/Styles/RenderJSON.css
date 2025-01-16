@@ -1,0 +1,31 @@
+#file_system ul, #file_system li{
+    list-style: none !important;
+    cursor: pointer;
+}
+
+li[data-first="true"]{
+    display: block !important;
+}
+
+/* Basic styling for the file system */
+ul.file-system {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+ul.file-system .folder {
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+#file_system ul .dropdown {
+    display: none;
+    /* Initially hide subfolders/files */
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+/* Show dropdown when folder is active */
+#file_system ul .active {
+    display: block;
+}
