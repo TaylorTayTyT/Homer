@@ -29,3 +29,7 @@ ul.file-system .folder {
 #file_system ul .active {
     display: block;
 }
+
+#file_system li .active{
+    display: block; 
+}
