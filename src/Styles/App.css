@@ -1,7 +1,20 @@
 #container{
   display: flex;
+  gap: 1rem;
 }
+
 
 #file_system{
   height: 100%;
+  border-right: solid 1px black;
+  height: 100vh;
+  padding-right: 1rem;
+}
+
+#text_editor{
+  flex-grow: 2;
+}
+#file_system.disable{
+  opacity: 0;
+  pointer-events: none;
 }

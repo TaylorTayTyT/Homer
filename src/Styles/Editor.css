@@ -1,0 +1,9 @@
+
+.tox-editor-header.disable{
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+button[data-mce-name="focus"]{
+    opacity: 1!important;
+}

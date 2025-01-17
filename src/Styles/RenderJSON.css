@@ -1,10 +1,11 @@
 #file_system ul, #file_system li{
     list-style: none !important;
-    cursor: pointer;
 }
 
 li[data-first="true"]{
     display: block !important;
+    border-left: none;
+    cursor: pointer;
 }
 
 /* Basic styling for the file system */
@@ -32,4 +33,6 @@ ul.file-system .folder {
 
 #file_system li .active{
     display: block; 
+    border-left: solid 1px black;
+    cursor: pointer;
 }

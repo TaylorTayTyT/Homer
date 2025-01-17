@@ -11,10 +11,8 @@ export default function FileExplorer() {
     
                 const targetElement: HTMLElement = e.target as HTMLElement;
                 const target = targetElement?.closest("li") as HTMLElement; // Get the clicked li element
-                console.log(target);
     
-                const ulElements: NodeListOf<HTMLElement> = target.querySelectorAll(":scope > ul"); // Find all nested ul elements
-                console.log(ulElements);
+                const ulElements: NodeListOf<HTMLElement> = target.querySelectorAll(":scope > ul"); // Find only child ul elements
     
                 ulElements.forEach((ulElement: HTMLElement) => {
                     // Toggle the "active" class for the nested ul elements
@@ -22,14 +20,11 @@ export default function FileExplorer() {
     
                     // Optionally toggle the "active" class on the li elements within the clicked ul
                     ulElement.querySelectorAll("li").forEach((liElement: HTMLElement) => {
-                        console.log(liElement.classList);
                         if (liElement.classList.contains("active")) {
                             liElement.classList.remove("active");
                         } else {
                             liElement.classList.add("active");
                         }
-                        console.log(liElement.classList);
-                        console.log("______");
                     });
                 });
             });

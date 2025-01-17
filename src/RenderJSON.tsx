@@ -21,11 +21,11 @@ export default function RenderJSON({data, first}: props){
       // Render object keys and values
       return (
         <ul>
-          {Object.entries(data).map(([key, value]) => (
+          {Object.entries(data).map(([key, value]) => { return (
             <li data-first = {first} key={key} className="folder dropdown">
-              <strong>{key}&#x25BC;</strong> <RenderJSON data={value} first={false} />
+              <strong>{key}{typeof value === 'object' && value !== null && Object.entries(value) ? "\u{25BC}" : ""}</strong> <RenderJSON data={value} first={false} />
             </li>
-          ))}
+          )})}
         </ul>
       );
     } else {
