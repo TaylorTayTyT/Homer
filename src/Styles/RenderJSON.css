@@ -2,6 +2,10 @@
     list-style: none !important;
 }
 
+ul[data-first="true"]{
+    padding: 0;
+}
+
 li[data-first="true"]{
     display: block !important;
     border-left: none;
@@ -35,4 +39,9 @@ ul.file-system .folder {
     display: block; 
     border-left: solid 1px black;
     cursor: pointer;
+}
+
+li strong{
+    display: flex;
+    align-items: center;
 }
