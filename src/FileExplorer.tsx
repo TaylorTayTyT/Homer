@@ -9,36 +9,34 @@ export default function FileExplorer() {
     function assignDropDownsToFileSystem() {
         document.querySelectorAll("li").forEach((elem: HTMLElement) => {
             elem.addEventListener('click', (e) => {
+
                 e.stopPropagation(); // Prevent event bubbling
 
-                const targetElement: HTMLElement = e.target as HTMLElement;
-                const target = targetElement?.closest("li") as HTMLElement; // Get the clicked li element
-
-                const ulElements: NodeListOf<HTMLElement> = target.querySelectorAll(":scope > ul"); // Find only child ul elements
-
-                ulElements.forEach((ulElement: HTMLElement) => {
-                    // Toggle the "active" class for the nested ul elements
-                    const parent = ulElement.parentElement
-                    const parentArrow = parent?.querySelector("strong")?.querySelector("div");
-                    ulElement.classList.toggle("active");
-
-                    // Optionally toggle the "active" class on the li elements within the clicked ul
-                    ulElement.querySelectorAll("li").forEach((liElement: HTMLElement) => {
-                        const liBold = liElement.querySelector("strong");
-                        const liBoldDiv = liBold?.querySelector("div");
-                        if (liElement.classList.contains("active")) {
-                            liElement.classList.remove("active");
-                            if(parentArrow){
-                                parentArrow.innerText = right_triangle;
-                            }
-
-                        } else {
-                            liElement.classList.add("active");
-                            if (parentArrow) {
-                                parentArrow.innerText = down_triangle;
-                            }
-                        }
-                    });
+                let targetElement: HTMLElement | null = e.target as HTMLElement; //grab the targeted list item 
+                targetElement = targetElement.closest("li");
+                if(!targetElement) return; 
+                const targetChildUL: HTMLElement | null = targetElement.querySelector("ul"); //grab the child ul - there will only be one of these
+                // console.log(targetElement);
+                // console.log(targetChildUL)
+                if(!targetChildUL) return //there are no children - leaf nodes
+                targetChildUL.classList.toggle("active"); //
+                const arrow = targetElement.querySelector("strong")?.querySelector("div"); //change the arrow status of targeted list item
+                if(arrow){
+                    arrow.innerText = targetChildUL.classList.contains("active") ? down_triangle : right_triangle;
+                }
+                const targetChildULLI = targetChildUL.querySelectorAll(":scope > li");
+                targetChildULLI.forEach((elem: Element) =>{
+                    elem.classList.toggle("active");
+                    const strong = elem.querySelector("strong");
+                    if(!strong) return; 
+                    const arrow = strong.querySelector("div");
+                    if(!arrow) return; 
+                    if(!elem.querySelector("ul")){
+                        arrow.innerText = "";
+                        return; 
+                    }
+                    
+                    arrow.innerText = elem.querySelector("ul")?.classList.contains("active") ? down_triangle : right_triangle;
                 });
             });
         });

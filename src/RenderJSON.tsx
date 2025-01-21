@@ -6,7 +6,8 @@ interface props{
     first: boolean
 }
 export default function RenderJSON({data, first}: props){
-  
+  const right_triangle = " \u{25B6}";
+    const down_triangle = " \u{25BC}";
     if (Array.isArray(data)) {
       // Render array elements
       return (
@@ -24,7 +25,7 @@ export default function RenderJSON({data, first}: props){
         <ul data-first = {first}>
           {Object.entries(data).map(([key, value]) => { return (
             <li data-first = {first} key={key} className="folder dropdown">
-              <strong>{key}<div className="arrow">{typeof value === 'object' && value !== null && Object.entries(value) ? "\u{25B6}" : ""}</div></strong> <RenderJSON data={value} first={false} />
+              <strong>{key}<div className="arrow">{typeof value === 'object' && value !== null && Object.entries(value) ? right_triangle : ""}</div></strong> <RenderJSON data={value} first={false} />
             </li>
           )})}
         </ul>
