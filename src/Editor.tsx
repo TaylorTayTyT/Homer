@@ -1,16 +1,26 @@
-import React, { useRef } from 'react';
+import React, { useRef, Dispatch, SetStateAction } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import "./Styles/Editor.css"
+import "./Styles/Editor.css";
 
-export default function TextEditor() {
+type FullScreenToggleProps = {
+  SetIsFullScreen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+
+export default function TextEditor({SetIsFullScreen} : FullScreenToggleProps) {
   const editorRef: any = useRef(null);
-  const log = () => {
-    if (editorRef.current) {
-      console.log(editorRef.current.getContent());
-    }
-  };
+  // const log = () => {
+  //   if (editorRef.current) {
+  //     console.log(editorRef.current.getContent());
+  //   }
+  // };
+
+  const tinyMCECSS = 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } #tinymce{margin-left: 10%;width: 80%;}';
   return (
-    <div id='editor'>
+    <div id='editor' aria-hidden="false">
+      <button onClick={()=>{
+        editorRef.current.execCommand("mceFullScreen");
+      }}>button</button>
       <Editor
         apiKey='2j6d39ibmyedqmngituet4cu6t6itq6p5ipd319un1patjk8'
         id="editor"
@@ -29,8 +39,16 @@ export default function TextEditor() {
               },
             });
             editor.on('FullscreenStateChanged', (e) =>{
-              document.querySelector(".tox-editor-header")?.classList.toggle("disable")
-              document.getElementById("file_system")?.classList.toggle("disable")
+              //start here Taylor
+              document.querySelector("div[role=menubar]")?.classList.toggle("disable");
+              document.querySelectorAll("div[role=toolbar] button:not([data-mce-name=focus])").forEach((tool)=>{
+                tool.classList.toggle("disable");
+              });
+              document.querySelectorAll("div[role=toolbar] div").forEach((tool)=>{
+                tool.classList.toggle("disable");
+              })
+              SetIsFullScreen(e.state)
+              //document.getElementById("file_system")?.classList.toggle("disable")
             })
           },
           height: window.innerHeight,
@@ -58,7 +76,7 @@ export default function TextEditor() {
           toolbar: 'focus undo redo | formatselect | bold italic backcolor | fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
           font_formats: 'Arial=arial,helvetica,sans-serif; Times New Roman=times new roman,times; Verdana=verdana,geneva;',
           fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
-          content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+          content_style: tinyMCECSS,
         }}
       />
 

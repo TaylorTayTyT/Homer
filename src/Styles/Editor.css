@@ -1,8 +1,25 @@
 
-.tox-editor-header.disable{
+/* .tox-editor-header.disable{
+    opacity: 0 !important;
+    pointer-events: none;
+} */
+
+div[role=menubar].disable{
+    opacity: 0 !important;
+    pointer-events: none;
+    position: absolute;
+}
+
+div[role=toolbar] button:not([data-mce-name=focus]).disable{
     opacity: 0 !important;
     pointer-events: none;
 }
+
+div[role=toolbar] div.disable{
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
 
 button[data-mce-name="focus"]{
     opacity: 1!important;

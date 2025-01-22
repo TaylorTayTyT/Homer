@@ -4,12 +4,13 @@
 }
 
 
-#file_system{
+#sidebar{
   height: 100%;
   border-right: solid 1px black;
   height: 100vh;
   padding-right: 1rem;
 }
+
 
 #text_editor{
   flex-grow: 2;
