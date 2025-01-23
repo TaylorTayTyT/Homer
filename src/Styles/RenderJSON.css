@@ -1,5 +1,6 @@
 #file_system ul, #file_system li{
     list-style: none !important;
+    padding-right: 1rem;
 }
 
 ul[data-first="true"]{

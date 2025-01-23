@@ -10,12 +10,7 @@ div[role=menubar].disable{
     position: absolute;
 }
 
-div[role=toolbar] button:not([data-mce-name=focus]).disable{
-    opacity: 0 !important;
-    pointer-events: none;
-}
-
-div[role=toolbar] div.disable{
+div[role=toolbar].disable{
     opacity: 0 !important;
     pointer-events: none;
 }

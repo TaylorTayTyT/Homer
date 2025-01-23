@@ -1,6 +1,6 @@
 #fullScreenOptionsContainer{
-    position: relative;
+    display: flex;
     height: 100%;
     width: fit-content;
-    z-index: 10000;
+    padding: 1rem;
 }

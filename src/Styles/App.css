@@ -5,10 +5,10 @@
 
 
 #sidebar{
+  position: absolute;
   height: 100%;
-  border-right: solid 1px black;
   height: 100vh;
-  padding-right: 1rem;
+  z-index: 10001;
 }
 
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import RenderJSON from "./RenderJSON";
+import "./Styles/FileExplorer.css";
 export default function FileExplorer() {
     const [files, SetFiles] = useState<any>();
     const right_triangle = " \u{25B6}";
