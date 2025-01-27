@@ -8,7 +8,9 @@
   position: absolute;
   height: 100%;
   height: 100vh;
-  z-index: 10001;
+  border-right: solid 1px black;
+  cursor: col-resize;
+  padding-right: 1rem;
 }
 
 

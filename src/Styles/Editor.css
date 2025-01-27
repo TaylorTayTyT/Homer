@@ -19,3 +19,8 @@ div[role=toolbar].disable{
 button[data-mce-name="focus"]{
     opacity: 1!important;
 }
+
+button.disable{
+    opacity: 0 !important;
+    pointer-events: none;
+}
