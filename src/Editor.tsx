@@ -1,20 +1,26 @@
-import React, { useRef, Dispatch, SetStateAction } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import "./Styles/Editor.css";
 import { QuillIcon } from './Components/Logos';
-type FullScreenToggleProps = {
-  SetIsFullScreen: React.Dispatch<React.SetStateAction<boolean>>;
-  editorRef: any;
+type props = {
+  type: string
 };
 
 
-export default function TextEditor() {
-  // const log = () => {
-  //   if (editorRef.current) {
-  //     console.log(editorRef.current.getContent());
-  //   }
-  // };
+export default function TextEditor({type}: props) {
+  console.log(type)
+  let content = ""; 
+  switch (type){
+    case "character":
+      content = "<h1 style=\"text-align: center;\" data-mce-style=\"text-align: center;\">[Character Name]</h1><p><br data-mce-bogus=\"1\"></p><p>Appearance:</p><p>Background:</p><p>Lifestyle:</p><p>Interests:</p><p>Relationships:</p><p>Motivations:</p>";
+      break;
+    case "setting":
+      content = "<h1 style=\"text-align: center;\" data-mce-style=\"text-align: center;\">[Setting]</h1><p><br data-mce-bogus=\"1\"></p><p>Geography:</p><p>Community Life:</p><p>Population Makeup:</p><p>Religion:</p><p>Technology:</p><p>Social Structure:</p><p>Government Structure:</p>"
+      break; 
+    default:
+      content = ''
+    }
 
+    console.log(content)
   const tinyMCECSS = 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } #tinymce{margin-left: 10%;width: 80%;} .tox-tinymce:focus {outline: none !important;box-shadow: none !important;}';
   return (
     <>
@@ -22,7 +28,7 @@ export default function TextEditor() {
         <Editor
           apiKey='2j6d39ibmyedqmngituet4cu6t6itq6p5ipd319un1patjk8'
           id="editor"
-          initialValue="<p>This is the initial content of the editor.</p>"
+          initialValue={content}
           init={{
             setup: (editor) => {
               // Define the custom button

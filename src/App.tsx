@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import FileExplorer from "./FileExplorer";
 import "./Styles/App.css"
 import { memo, useEffect, useRef, useState } from "react";
+import Timeline from "./Timeline";
 import FullscreenOptions from "./FullScreenOptions";
 export default function App() {
     const [isFullscreen, SetIsFullScreen] = useState(false);
@@ -19,11 +20,13 @@ export default function App() {
             const sidebar = document.getElementById("sidebar");
             if(!sidebar) return; 
             const sideBarWidth = sidebar.getBoundingClientRect().width;
-            console.log(initX)
+            let barrier = document.querySelector("li[data-first=true] strong div.arrow")?.getBoundingClientRect().right; 
             function adjust(e: MouseEvent){
                 if(!sidebar) return;
-                let newWidth = sideBarWidth - (initX - e.clientX)
-                sidebar.style.width = `${e.clientX}px`;
+                let newWidth = e.x
+                if(!barrier || newWidth < barrier) return; 
+                barrier += 16;
+                sidebar.style.width = `${newWidth}px`;
             }
             sidebar?.addEventListener("mousemove", adjust);
             sidebar?.addEventListener('mouseup', (e) =>{
@@ -45,15 +48,10 @@ export default function App() {
 
     }, [])
 
-    type FullScreenToggleProps = {
-        SetIsFullScreen: React.Dispatch<React.SetStateAction<boolean>>;
-        editorRef: any;
-    };
-
     //use this so you dont rerender the text editor
     const Control = memo(function Control() {
         return (
-            <TextEditor />
+            <TextEditor type="setting"/>
         )
     });
     return (
@@ -64,6 +62,7 @@ export default function App() {
                 </div>
             </div>
             <div id="text_editor">
+                {/* <Timeline/> */}
                 <Control />
             </div>
         </div>

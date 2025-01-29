@@ -10,15 +10,11 @@ export default function FileExplorer() {
     function assignDropDownsToFileSystem() {
         document.querySelectorAll("li").forEach((elem: HTMLElement) => {
             elem.addEventListener('click', (e) => {
-
                 e.stopPropagation(); // Prevent event bubbling
-
                 let targetElement: HTMLElement | null = e.target as HTMLElement; //grab the targeted list item 
                 targetElement = targetElement.closest("li");
                 if(!targetElement) return; 
                 const targetChildUL: HTMLElement | null = targetElement.querySelector("ul"); //grab the child ul - there will only be one of these
-                // console.log(targetElement);
-                // console.log(targetChildUL)
                 if(!targetChildUL) return //there are no children - leaf nodes
                 targetChildUL.classList.toggle("active"); //
                 const arrow = targetElement.querySelector("strong")?.querySelector("div"); //change the arrow status of targeted list item
@@ -57,7 +53,6 @@ export default function FileExplorer() {
 
     useEffect(() => {
         if (files) {
-            //traverseFiles(files["./src/Homer"]);
             assignDropDownsToFileSystem();
         }
     }, [files])
