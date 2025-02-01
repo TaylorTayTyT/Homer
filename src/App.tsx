@@ -7,6 +7,7 @@ import Timeline from "./Timeline";
 import FullscreenOptions from "./FullScreenOptions";
 export default function App() {
     const [isFullscreen, SetIsFullScreen] = useState(false);
+    const [activeFile, SetActiveFile] = useState<string>();
     const editorRef = useRef();
     useEffect(() => {
         editorRef.current = undefined;
@@ -16,54 +17,48 @@ export default function App() {
     }, [isFullscreen]);
     useEffect(() => {
         function sidebarDrag(e: MouseEvent) {
-            const initX = e.clientX; 
             const sidebar = document.getElementById("sidebar");
             if(!sidebar) return; 
-            const sideBarWidth = sidebar.getBoundingClientRect().width;
             let barrier = document.querySelector("li[data-first=true] strong div.arrow")?.getBoundingClientRect().right; 
             function adjust(e: MouseEvent){
                 if(!sidebar) return;
-                let newWidth = e.x
+                let newWidth = e.clientX
                 if(!barrier || newWidth < barrier) return; 
-                barrier += 16;
+                //barrier += 16;
                 sidebar.style.width = `${newWidth}px`;
             }
-            sidebar?.addEventListener("mousemove", adjust);
-            sidebar?.addEventListener('mouseup', (e) =>{
-                sidebar.removeEventListener("mousemove", adjust);
+            document.addEventListener("mousemove", adjust);
+            document.addEventListener('mouseup', (e) =>{
+                document.removeEventListener("mousemove", adjust);
             })
         };
 
         const sidebar = document.getElementById("sidebar");
-
         if (sidebar) {
             sidebar.addEventListener("mousedown", sidebarDrag);
-            sidebar.addEventListener("mousemove", (e)=>{
-                if(sidebar.getBoundingClientRect().right - e.clientX < 16) sidebar.style.cursor = "col-resize"
-                else{
-                    sidebar.style.cursor = "";
-                }
-            })
         }
 
     }, [])
 
     //use this so you dont rerender the text editor
-    const Control = memo(function Control() {
+    type prps = {
+        type: string, 
+        activeFile: string | undefined
+    }
+    const Control = memo(function Control({type, activeFile}: prps) {
         return (
-            <TextEditor type="setting"/>
+            <TextEditor type={type} activeFile={activeFile}/>
         )
     });
     return (
         <div id="container" data-fullscreen={isFullscreen}>
             <div id="sidebar">
                 <div>
-                    {isFullscreen ? "" : <FileExplorer />}
+                    {isFullscreen ? "" : <FileExplorer setActiveFile={SetActiveFile}/>}
                 </div>
             </div>
             <div id="text_editor">
-                {/* <Timeline/> */}
-                <Control />
+                <Control type="setting" activeFile={activeFile}/>
             </div>
         </div>
     )

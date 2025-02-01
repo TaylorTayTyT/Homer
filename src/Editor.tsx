@@ -2,11 +2,12 @@ import { Editor } from '@tinymce/tinymce-react';
 import "./Styles/Editor.css";
 import { QuillIcon } from './Components/Logos';
 type props = {
-  type: string
+  type: string,
+  activeFile: string | undefined
 };
 
 
-export default function TextEditor({type}: props) {
+export default function TextEditor({type,activeFile}: props) {
   console.log(type)
   let content = ""; 
   switch (type){
@@ -14,7 +15,7 @@ export default function TextEditor({type}: props) {
       content = "<h1 style=\"text-align: center;\" data-mce-style=\"text-align: center;\">[Character Name]</h1><p><br data-mce-bogus=\"1\"></p><p>Appearance:</p><p>Background:</p><p>Lifestyle:</p><p>Interests:</p><p>Relationships:</p><p>Motivations:</p>";
       break;
     case "setting":
-      content = "<h1 style=\"text-align: center;\" data-mce-style=\"text-align: center;\">[Setting]</h1><p><br data-mce-bogus=\"1\"></p><p>Geography:</p><p>Community Life:</p><p>Population Makeup:</p><p>Religion:</p><p>Technology:</p><p>Social Structure:</p><p>Government Structure:</p>"
+      content = `<h1 style="text-align: center;" data-mce-style="text-align: center;">${activeFile}</h1><p><br data-mce-bogus="1"></p><p>Geography:</p><p>Community Life:</p><p>Population Makeup:</p><p>Religion:</p><p>Technology:</p><p>Social Structure:</p><p>Government Structure:</p>`
       break; 
     default:
       content = ''
