@@ -4,13 +4,23 @@ import RenderJSON from "./RenderJSON";
 import "./Styles/FileExplorer.css";
 
 interface props{
-    setActiveFile: any
+    setActiveFile: any,
+    SetType: any
 }
 
-export default function FileExplorer({setActiveFile} : props) {
+export default function FileExplorer({setActiveFile, SetType} : props) {
     const [files, SetFiles] = useState<any>();
     const right_triangle = " \u{25B6}";
     const down_triangle = " \u{25BC}";
+
+    //find the parent folder
+    function findParentFolder(elem: Element | null){
+        const parents = ['chapter', 'characters', 'manuscript', 'setting', 'timeline']
+        if(!elem || elem.id === "file_system") return; 
+        const bold = elem.querySelector("strong")
+        if(bold && parents.includes(bold.innerText.slice(0, bold.innerText.length - 2))) return bold.innerText.slice(0, bold.innerText.length - 2)
+        return findParentFolder(elem.parentElement)
+    }
 
     //handles the behavior of clicking on a file
     function filePrep(elem: Element){
@@ -24,6 +34,7 @@ export default function FileExplorer({setActiveFile} : props) {
             strong.classList.add("file");
             strong.addEventListener("click", ()=>{
                 setActiveFile(strong.innerText);
+                SetType(findParentFolder(elem))
             });
             return; 
         }
@@ -51,6 +62,7 @@ export default function FileExplorer({setActiveFile} : props) {
     function assignDropDownsToFileSystem() {
         document.querySelectorAll("li").forEach((elem: HTMLElement) => {
             elem.addEventListener('click', (e) => {
+                e.stopPropagation(); 
                 assignDropdowns(e); 
             });
         });

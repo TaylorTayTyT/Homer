@@ -1,5 +1,5 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-use std::fs::{self};
+use std::{fs::{self}, path};
 use walkdir::WalkDir;
 use serde_json::{Map, Value};
 #[tauri::command]
@@ -68,13 +68,17 @@ fn insert_into_tree(
     }
 }
 
+#[tauri::command]
+fn insert_into_file(content: &str, path: &str){
+    let _ = std::fs::write(path, content);
+}
 
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, get_book_parts, recursive_directory_traversal])
+        .invoke_handler(tauri::generate_handler![greet, get_book_parts, recursive_directory_traversal, insert_into_file])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -2,7 +2,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import "./Styles/Editor.css";
 import { QuillIcon } from './Components/Logos';
 type props = {
-  type: string,
+  type: string | undefined,
   activeFile: string | undefined
 };
 
@@ -11,7 +11,7 @@ export default function TextEditor({type,activeFile}: props) {
   console.log(type)
   let content = ""; 
   switch (type){
-    case "character":
+    case "characters":
       content = "<h1 style=\"text-align: center;\" data-mce-style=\"text-align: center;\">[Character Name]</h1><p><br data-mce-bogus=\"1\"></p><p>Appearance:</p><p>Background:</p><p>Lifestyle:</p><p>Interests:</p><p>Relationships:</p><p>Motivations:</p>";
       break;
     case "setting":

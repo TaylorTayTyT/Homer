@@ -8,6 +8,7 @@ import FullscreenOptions from "./FullScreenOptions";
 export default function App() {
     const [isFullscreen, SetIsFullScreen] = useState(false);
     const [activeFile, SetActiveFile] = useState<string>();
+    const [type, SetType] = useState<string>(); 
     const editorRef = useRef();
     useEffect(() => {
         editorRef.current = undefined;
@@ -39,10 +40,13 @@ export default function App() {
         }
 
     }, [])
+    useEffect(()=>{
+        console.log("type is " + type)
+    }, [type])
 
     //use this so you dont rerender the text editor
     type prps = {
-        type: string, 
+        type: string | undefined, 
         activeFile: string | undefined
     }
     const Control = memo(function Control({type, activeFile}: prps) {
@@ -54,11 +58,11 @@ export default function App() {
         <div id="container" data-fullscreen={isFullscreen}>
             <div id="sidebar">
                 <div>
-                    {isFullscreen ? "" : <FileExplorer setActiveFile={SetActiveFile}/>}
+                    {isFullscreen ? "" : <FileExplorer setActiveFile={SetActiveFile} SetType={SetType}/>}
                 </div>
             </div>
             <div id="text_editor">
-                <Control type="setting" activeFile={activeFile}/>
+                {type === "timeline" ? <Timeline/> : type ? <TextEditor type={type} activeFile={activeFile}/>  : ""}
             </div>
         </div>
     )
