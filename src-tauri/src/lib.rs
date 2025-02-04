@@ -73,6 +73,11 @@ fn insert_into_file(content: &str, path: &str){
     let _ = std::fs::write(path, content);
 }
 
+pub fn read_from_file(path: &str) -> String{
+    let contents = fs::read_to_string(path).expect("reading file problem");
+    return contents
+}
+
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {

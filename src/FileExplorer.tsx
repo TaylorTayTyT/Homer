@@ -33,6 +33,7 @@ export default function FileExplorer({setActiveFile, SetType} : props) {
             arrow.innerText = "";
             strong.classList.add("file");
             strong.addEventListener("click", ()=>{
+                console.log(elem)
                 setActiveFile(strong.innerText);
                 SetType(findParentFolder(elem))
             });

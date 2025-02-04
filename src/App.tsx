@@ -5,6 +5,7 @@ import "./Styles/App.css"
 import { memo, useEffect, useRef, useState } from "react";
 import Timeline from "./Timeline";
 import FullscreenOptions from "./FullScreenOptions";
+import Instructions from "./Instructions";
 export default function App() {
     const [isFullscreen, SetIsFullScreen] = useState(false);
     const [activeFile, SetActiveFile] = useState<string>();
@@ -40,20 +41,6 @@ export default function App() {
         }
 
     }, [])
-    useEffect(()=>{
-        console.log("type is " + type)
-    }, [type])
-
-    //use this so you dont rerender the text editor
-    type prps = {
-        type: string | undefined, 
-        activeFile: string | undefined
-    }
-    const Control = memo(function Control({type, activeFile}: prps) {
-        return (
-            <TextEditor type={type} activeFile={activeFile}/>
-        )
-    });
     return (
         <div id="container" data-fullscreen={isFullscreen}>
             <div id="sidebar">
@@ -62,7 +49,7 @@ export default function App() {
                 </div>
             </div>
             <div id="text_editor">
-                {type === "timeline" ? <Timeline/> : type ? <TextEditor type={type} activeFile={activeFile}/>  : ""}
+                {type === "timeline" ? <Timeline/> : type ? <TextEditor type={type} activeFile={activeFile}/>  : <Instructions/>}
             </div>
         </div>
     )

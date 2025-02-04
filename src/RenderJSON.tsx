@@ -7,7 +7,6 @@ interface props{
 }
 export default function RenderJSON({data, first}: props){
   const right_triangle = " \u{25B6}";
-    const down_triangle = " \u{25BC}";
     if (Array.isArray(data)) {
       // Render array elements
       return (

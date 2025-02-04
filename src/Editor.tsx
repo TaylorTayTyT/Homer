@@ -1,27 +1,25 @@
 import { Editor } from '@tinymce/tinymce-react';
 import "./Styles/Editor.css";
 import { QuillIcon } from './Components/Logos';
+import { invoke } from '@tauri-apps/api/core';
 type props = {
   type: string | undefined,
   activeFile: string | undefined
 };
 
-
-export default function TextEditor({type,activeFile}: props) {
-  console.log(type)
-  let content = ""; 
-  switch (type){
+function setContent(type: string | undefined, activeFile: string | undefined) {
+  switch (type) {
     case "characters":
-      content = "<h1 style=\"text-align: center;\" data-mce-style=\"text-align: center;\">[Character Name]</h1><p><br data-mce-bogus=\"1\"></p><p>Appearance:</p><p>Background:</p><p>Lifestyle:</p><p>Interests:</p><p>Relationships:</p><p>Motivations:</p>";
-      break;
+      return "<h1 style=\"text-align: center;\" data-mce-style=\"text-align: center;\">[Character Name]</h1><p><br data-mce-bogus=\"1\"></p><p>Appearance:</p><p>Background:</p><p>Lifestyle:</p><p>Interests:</p><p>Relationships:</p><p>Motivations:</p>";
     case "setting":
-      content = `<h1 style="text-align: center;" data-mce-style="text-align: center;">${activeFile}</h1><p><br data-mce-bogus="1"></p><p>Geography:</p><p>Community Life:</p><p>Population Makeup:</p><p>Religion:</p><p>Technology:</p><p>Social Structure:</p><p>Government Structure:</p>`
-      break; 
+      return `<h1 style="text-align: center;" data-mce-style="text-align: center;">${activeFile}</h1><p><br data-mce-bogus="1"></p><p>Geography:</p><p>Community Life:</p><p>Population Makeup:</p><p>Religion:</p><p>Technology:</p><p>Social Structure:</p><p>Government Structure:</p>`
     default:
-      content = ''
-    }
+      return ''
+  }
+}
+export default function TextEditor({ type, activeFile }: props) {
+  let content = setContent(type, activeFile);
 
-    console.log(content)
   const tinyMCECSS = 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } #tinymce{margin-left: 10%;width: 80%;} .tox-tinymce:focus {outline: none !important;box-shadow: none !important;}';
   return (
     <>
@@ -32,29 +30,50 @@ export default function TextEditor({type,activeFile}: props) {
           initialValue={content}
           init={{
             setup: (editor) => {
-              // Define the custom button
-              editor.ui.registry.addButton('focus', {
-                text: 'Focus', // Button text
-                icon: 'focus', // Optional, use TinyMCE's built-in icons
-                tooltip: 'Enter focus mode',
-                onAction: () => {
-                  // Define the button's action
-                  editor.execCommand("mceFullScreen")
-                },
-              });
-              editor.ui.registry.addIcon('focus', QuillIcon);
-              editor.on('FullscreenStateChanged', (e) => {
-                document.querySelectorAll("div[role=menubar]")?.forEach(menubar =>{
-                  menubar.classList.toggle("disable");
-                })
-                document.querySelectorAll("div[role=toolbar]")?.forEach(toolbar =>{
-                  if(toolbar.querySelector("button[data-mce-name=\"focus\"")){
-                    return; 
-                  } else {
-                    toolbar.classList.toggle("disable");
+              //adds all custom buttons
+              function addCustomButtons(){
+                editor.ui.registry.addButton('focus', {
+                  text: 'Focus', // Button text
+                  icon: 'focus', // Optional, use TinyMCE's built-in icons
+                  tooltip: 'Enter focus mode',
+                  onAction: () => {
+                    // Define the button's action
+                    editor.execCommand("mceFullScreen")
+                  },
+                });
+                editor.ui.registry.addIcon('focus', QuillIcon);
+
+                editor.ui.registry.addButton('save', {
+                  text: 'Save',
+                  icon: 'save',
+                  tooltip: 'save',
+                  onAction: () =>{
+                    const content = editor.getContent().replace(/[\r\n]+/g, '');
+                    console.log(activeFile)
                   }
                 })
-              })
+                editor.ui.registry.addIcon('save', "save")
+              }
+              
+              //adds appropriate action on top of event handlers
+              function setEventHandlers(){
+                editor.on('FullscreenStateChanged', (e) => {
+                  document.querySelectorAll("div[role=menubar]")?.forEach(menubar => {
+                    menubar.classList.toggle("disable");
+                  })
+                  document.querySelectorAll("div[role=toolbar]")?.forEach(toolbar => {
+                    if (toolbar.querySelector("button[data-mce-name=\"focus\"")) {
+                      return;
+                    } else {
+                      toolbar.classList.toggle("disable");
+                    }
+                  })
+                })
+              }
+              addCustomButtons(); 
+              setEventHandlers(); 
+            
+              
             },
             height: window.innerHeight,
             menubar: true,
@@ -78,7 +97,7 @@ export default function TextEditor({type,activeFile}: props) {
               'help',
               'wordcount',
             ],
-            toolbar: 'focus | undo redo | formatselect | bold italic backcolor | fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+            toolbar: 'focus save | undo redo | formatselect | bold italic backcolor | fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
             font_formats: 'Arial=arial,helvetica,sans-serif; Times New Roman=times new roman,times; Verdana=verdana,geneva;',
             fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
             content_style: tinyMCECSS,
