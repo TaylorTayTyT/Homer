@@ -22,6 +22,7 @@ function setContent(type: string | undefined, activeFile: string | undefined) {
   }
 }
 function findParentFolder(elem: Element | null | undefined, address: string[]) {
+  //NEED TO FIX THIS
   console.log(elem)
   const parents = ['chapter', 'characters', 'manuscript', 'setting', 'timeline']
   if (!elem || elem.id === "file_system") return;
@@ -65,7 +66,13 @@ export default function TextEditor({ type, activeFile, activeFileHTML,activeFile
                   icon: 'save',
                   tooltip: 'save',
                   onAction: () => {
-                    if(activeFileRef)console.log(activeFileRef.current)
+                    let local_path: string[] | undefined = [];
+                    if(activeFileRef) local_path = findParentFolder(activeFileRef.current, []);
+                    if(local_path) {
+                      local_path = local_path.reverse();
+                      local_path.pop(); 
+                    }
+                    console.log(local_path)
                   }
                 })
                 editor.ui.registry.addIcon('save', "save")
