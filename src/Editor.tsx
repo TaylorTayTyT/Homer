@@ -2,9 +2,13 @@ import { Editor } from '@tinymce/tinymce-react';
 import "./Styles/Editor.css";
 import { QuillIcon } from './Components/Logos';
 import { invoke } from '@tauri-apps/api/core';
+import { useEffect, useRef } from 'react';
+import tinymce from 'tinymce';
 type props = {
   type: string | undefined,
-  activeFile: string | undefined
+  activeFile: string | undefined,
+  activeFileHTML: Element | undefined,
+  activeFileRef: React.MutableRefObject<Element | undefined>
 };
 
 function setContent(type: string | undefined, activeFile: string | undefined) {
@@ -17,10 +21,22 @@ function setContent(type: string | undefined, activeFile: string | undefined) {
       return ''
   }
 }
-export default function TextEditor({ type, activeFile }: props) {
+function findParentFolder(elem: Element | null | undefined, address: string[]) {
+  console.log(elem)
+  const parents = ['chapter', 'characters', 'manuscript', 'setting', 'timeline']
+  if (!elem || elem.id === "file_system") return;
+  const bold = elem.querySelector("strong");
+  if (bold) {
+    address.push(bold.innerText.split(".").length == 2 ? bold.innerText : bold.innerText.slice(0, bold.innerText.length - 2));
+  }
+  if (bold && parents.includes(bold.innerText.slice(0, bold.innerText.length - 2))) return address
+  return findParentFolder(elem.parentElement, address)
+}
+export default function TextEditor({ type, activeFile, activeFileHTML,activeFileRef }: props) {
+  console.log(activeFile);
   let content = setContent(type, activeFile);
-
   const tinyMCECSS = 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } #tinymce{margin-left: 10%;width: 80%;} .tox-tinymce:focus {outline: none !important;box-shadow: none !important;}';
+
   return (
     <>
       <div id='editor' aria-hidden="false">
@@ -30,8 +46,9 @@ export default function TextEditor({ type, activeFile }: props) {
           initialValue={content}
           init={{
             setup: (editor) => {
+              console.log("setting up")
               //adds all custom buttons
-              function addCustomButtons(){
+              function addCustomButtons() {
                 editor.ui.registry.addButton('focus', {
                   text: 'Focus', // Button text
                   icon: 'focus', // Optional, use TinyMCE's built-in icons
@@ -47,16 +64,15 @@ export default function TextEditor({ type, activeFile }: props) {
                   text: 'Save',
                   icon: 'save',
                   tooltip: 'save',
-                  onAction: () =>{
-                    const content = editor.getContent().replace(/[\r\n]+/g, '');
-                    console.log(activeFile)
+                  onAction: () => {
+                    if(activeFileRef)console.log(activeFileRef.current)
                   }
                 })
                 editor.ui.registry.addIcon('save', "save")
               }
               
               //adds appropriate action on top of event handlers
-              function setEventHandlers(){
+              function setEventHandlers() {
                 editor.on('FullscreenStateChanged', (e) => {
                   document.querySelectorAll("div[role=menubar]")?.forEach(menubar => {
                     menubar.classList.toggle("disable");
@@ -71,9 +87,7 @@ export default function TextEditor({ type, activeFile }: props) {
                 })
               }
               addCustomButtons(); 
-              setEventHandlers(); 
-            
-              
+              setEventHandlers();
             },
             height: window.innerHeight,
             menubar: true,

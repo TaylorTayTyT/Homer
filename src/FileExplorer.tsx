@@ -5,10 +5,11 @@ import "./Styles/FileExplorer.css";
 
 interface props{
     setActiveFile: any,
-    SetType: any
+    SetType: any,
+    SetActiveFileHTML: any
 }
 
-export default function FileExplorer({setActiveFile, SetType} : props) {
+export default function FileExplorer({setActiveFile, SetType, SetActiveFileHTML} : props) {
     const [files, SetFiles] = useState<any>();
     const right_triangle = " \u{25B6}";
     const down_triangle = " \u{25BC}";
@@ -34,8 +35,10 @@ export default function FileExplorer({setActiveFile, SetType} : props) {
             strong.classList.add("file");
             strong.addEventListener("click", ()=>{
                 console.log(elem)
+                SetActiveFileHTML(strong);
                 setActiveFile(strong.innerText);
                 SetType(findParentFolder(elem))
+                console.log(setActiveFile)
             });
             return; 
         }
