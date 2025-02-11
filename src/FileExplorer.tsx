@@ -34,11 +34,11 @@ export default function FileExplorer({setActiveFile, SetType, SetActiveFileHTML}
             arrow.innerText = "";
             strong.classList.add("file");
             strong.addEventListener("click", ()=>{
-                console.log(elem)
+                //console.log(elem)
                 SetActiveFileHTML(strong);
                 setActiveFile(strong.innerText);
                 SetType(findParentFolder(elem))
-                console.log(setActiveFile)
+                //console.log(setActiveFile)
             });
             return; 
         }

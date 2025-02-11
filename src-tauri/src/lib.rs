@@ -1,5 +1,5 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-use std::{fs::{self}, path};
+use std::{fs::{self}, path, vec};
 use walkdir::WalkDir;
 use serde_json::{Map, Value};
 #[tauri::command]
@@ -32,6 +32,32 @@ fn recursive_directory_traversal() -> Value {
     }
 
     Value::Object(directory_tree)
+}
+
+#[tauri::command]
+fn insert_into_file(content: String, path: Vec<&str>) -> Result<(), String> {
+    let mut valid_path = vec!["src", "Homer"];
+    valid_path.extend(path.clone());
+
+    // Convert the path to a single string
+    let file_path = valid_path.join(&path::MAIN_SEPARATOR.to_string());
+
+    // Attempt to write the file and handle errors
+    if let Err(err) = std::fs::write(&file_path, content) {
+        return Err(format!("Failed to write file: {}", err));
+    }
+
+    Ok(())
+
+    //TODO: remove the Homer shit from the watch files
+}
+
+#[tauri::command]
+fn read_from_file(path: Vec<&str>) -> String{
+    let mut valid_path = vec!["src", "Homer"];
+    valid_path.extend(path.clone());
+    let contents = fs::read_to_string(valid_path.join(path::MAIN_SEPARATOR_STR)).expect("reading file problem");
+    return contents
 }
 
 /// Recursively inserts files and directories into the tree structure
@@ -68,22 +94,11 @@ fn insert_into_tree(
     }
 }
 
-#[tauri::command]
-fn insert_into_file(content: &str, path: &str){
-    let _ = std::fs::write(path, content);
-}
-
-pub fn read_from_file(path: &str) -> String{
-    let contents = fs::read_to_string(path).expect("reading file problem");
-    return contents
-}
-
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, get_book_parts, recursive_directory_traversal, insert_into_file])
+        .invoke_handler(tauri::generate_handler![greet, get_book_parts, recursive_directory_traversal, insert_into_file, read_from_file])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -23,18 +23,20 @@ function setContent(type: string | undefined, activeFile: string | undefined) {
 }
 function findParentFolder(elem: Element | null | undefined, address: string[]) {
   //NEED TO FIX THIS
-  console.log(elem)
   const parents = ['chapter', 'characters', 'manuscript', 'setting', 'timeline']
   if (!elem || elem.id === "file_system") return;
   const bold = elem.querySelector("strong");
-  if (bold) {
+  // console.log(elem)
+  // console.log(bold)
+  // console.log("________________")
+  if (elem.tagName === "LI" && bold) {
     address.push(bold.innerText.split(".").length == 2 ? bold.innerText : bold.innerText.slice(0, bold.innerText.length - 2));
   }
-  if (bold && parents.includes(bold.innerText.slice(0, bold.innerText.length - 2))) return address
+  if (bold && parents.includes(bold.innerText.slice(0, bold.innerText.length - 2))) return address //end condition
   return findParentFolder(elem.parentElement, address)
 }
-export default function TextEditor({ type, activeFile, activeFileHTML,activeFileRef }: props) {
-  console.log(activeFile);
+export default function TextEditor({ type, activeFile, activeFileHTML, activeFileRef }: props) {
+  //console.log(activeFile);
   let content = setContent(type, activeFile);
   const tinyMCECSS = 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } #tinymce{margin-left: 10%;width: 80%;} .tox-tinymce:focus {outline: none !important;box-shadow: none !important;}';
 
@@ -47,7 +49,7 @@ export default function TextEditor({ type, activeFile, activeFileHTML,activeFile
           initialValue={content}
           init={{
             setup: (editor) => {
-              console.log("setting up")
+              //console.log("setting up")
               //adds all custom buttons
               function addCustomButtons() {
                 editor.ui.registry.addButton('focus', {
@@ -67,12 +69,13 @@ export default function TextEditor({ type, activeFile, activeFileHTML,activeFile
                   tooltip: 'save',
                   onAction: () => {
                     let local_path: string[] | undefined = [];
-                    if(activeFileRef) local_path = findParentFolder(activeFileRef.current, []);
+                    if(activeFileRef) local_path = findParentFolder(activeFileRef.current, [activeFile ? activeFile : ""]);
                     if(local_path) {
                       local_path = local_path.reverse();
                       local_path.pop(); 
                     }
-                    console.log(local_path)
+                    //console.log(local_path)
+                    invoke("insert_into_file", {content: editor.getContent(), path: local_path})
                   }
                 })
                 editor.ui.registry.addIcon('save', "save")
