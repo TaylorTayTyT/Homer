@@ -21,15 +21,17 @@ export default function App() {
         isFullscreen ? sidebar.style.position = "absolute" : sidebar.style.position = "relative";
     }, [isFullscreen]);
     useEffect(() => {
+        // handles the file explorer resize
         function sidebarDrag(e: MouseEvent) {
             const sidebar = document.getElementById("sidebar");
+            console.log(`x-value: ${e.x}\nfurthest right: ${sidebar?.getBoundingClientRect().right}`)
+            
             if(!sidebar) return; 
             let barrier = document.querySelector("li[data-first=true] strong div.arrow")?.getBoundingClientRect().right; 
             function adjust(e: MouseEvent){
-                if(!sidebar) return;
+                if(!sidebar) return; 
                 let newWidth = e.clientX
                 if(!barrier || newWidth < barrier) return; 
-                //barrier += 16;
                 sidebar.style.width = `${newWidth}px`;
             }
             document.addEventListener("mousemove", adjust);
@@ -38,8 +40,16 @@ export default function App() {
             })
         };
 
+        function addCursor(e: MouseEvent){
+            //START HERE FIND OUT HOW TO ADD THE CURSOR
+            const sidebar = document.getElementById("sidebar");
+            if(!sidebar) return; 
+            sidebar.style.cursor = "col-resize"
+        }
+
         const sidebar = document.getElementById("sidebar");
         if (sidebar) {
+            sidebar.addEventListener("mouseover", addCursor)
             sidebar.addEventListener("mousedown", sidebarDrag);
         }
 
