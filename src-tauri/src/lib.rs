@@ -8,7 +8,7 @@ fn greet(name: &str) -> String {
 }
 #[tauri::command]
 fn get_book_parts() -> Vec<String> {
-    let paths = fs::read_dir("./src/Homer").unwrap();
+    let paths = fs::read_dir("../Homer").unwrap();
     let mut paths_string = vec![];
     for path in paths{
         paths_string.push(path.unwrap().path().display().to_string().clone());
@@ -17,7 +17,7 @@ fn get_book_parts() -> Vec<String> {
 }
 #[tauri::command]
 fn recursive_directory_traversal() -> Value {
-    let start_dir = "./src/Homer";
+    let start_dir = "../Homer";
     let mut directory_tree: Map<String, Value> = Map::new();
 
     for entry in WalkDir::new(start_dir).into_iter().filter_map(|e| e.ok()) {
@@ -36,27 +36,27 @@ fn recursive_directory_traversal() -> Value {
 
 #[tauri::command]
 fn insert_into_file(content: String, path: Vec<&str>) -> Result<(), String> {
-    let mut valid_path = vec!["src", "Homer"];
+    let mut valid_path = vec!["..\\", "Homer"];
     valid_path.extend(path.clone());
 
+
     // Convert the path to a single string
-    let file_path = valid_path.join(&path::MAIN_SEPARATOR.to_string());
+    let p = valid_path.join(path::MAIN_SEPARATOR_STR);
 
     // Attempt to write the file and handle errors
-    if let Err(err) = std::fs::write(&file_path, content) {
+    if let Err(err) = std::fs::write(p.to_string(), content) {
         return Err(format!("Failed to write file: {}", err));
     }
 
     Ok(())
-
-    //TODO: remove the Homer shit from the watch files
 }
 
 #[tauri::command]
 fn read_from_file(path: Vec<&str>) -> String{
-    let mut valid_path = vec!["src", "Homer"];
+    let mut valid_path = vec!["..\\", "\\Homer"];
     valid_path.extend(path.clone());
-    let contents = fs::read_to_string(valid_path.join(path::MAIN_SEPARATOR_STR)).expect("reading file problem");
+    let p = valid_path.join(path::MAIN_SEPARATOR_STR);
+    let contents = fs::read_to_string(p.as_str()).expect(p.as_str());
     return contents
 }
 
