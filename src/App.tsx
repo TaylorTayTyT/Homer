@@ -43,8 +43,20 @@ export default function App() {
         function addCursor(e: MouseEvent){
             //START HERE FIND OUT HOW TO ADD THE CURSOR
             const sidebar = document.getElementById("sidebar");
+            console.log(sidebar?.getBoundingClientRect().right)
             if(!sidebar) return; 
-            sidebar.style.cursor = "col-resize"
+            sidebar.addEventListener("mousemove", (e: MouseEvent) =>{
+                const r = sidebar?.getBoundingClientRect().right
+                if(r - e.x < 16) sidebar.style.cursor = "col-resize";
+                else removeCursor(e)
+            })
+            
+        }
+
+        function removeCursor(e: MouseEvent){
+            const sidebar = document.getElementById("sidebar");
+            if(!sidebar) return; 
+            sidebar.style.cursor = "auto";
         }
 
         const sidebar = document.getElementById("sidebar");
