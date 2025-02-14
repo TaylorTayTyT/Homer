@@ -1,0 +1,1 @@
+<h1 style="text-align: center;" data-mce-style="text-align: center;">${activeFile}</h1><p><br data-mce-bogus="1"></p><p>Geography:</p><p>Community Life:</p><p>Population Makeup:</p><p>Religion:</p><p>Technology:</p><p>Social Structure:</p><p>Government Structure:</p>

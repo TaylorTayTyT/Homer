@@ -1,8 +1,1 @@
-<h1 style="text-align: center;">[Character Name]</h1>
-<p>&nbsp;</p>
-<p>Appearance:</p>
-<p>Background:</p>
-<p>Lifestyle:</p>
-<p>Interests:</p>
-<p>Relationships:</p>
-<p>Motivations:</p>
+<h1 style=\"text-align: center;\" data-mce-style=\"text-align: center;\">[Character Name]</h1><p><br data-mce-bogus=\"1\"></p><p>Appearance:</p><p>Background:</p><p>Lifestyle:</p><p>Interests:</p><p>Relationships:</p><p>Motivations:</p>

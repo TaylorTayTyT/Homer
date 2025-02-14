@@ -53,7 +53,7 @@ fn insert_into_file(content: String, path: Vec<&str>) -> Result<(), String> {
 
 #[tauri::command]
 fn read_from_file(path: Vec<&str>) -> String{
-    let mut valid_path = vec!["..\\", "\\Homer"];
+    let mut valid_path = vec!["..\\", "Homer"];
     valid_path.extend(path.clone());
     let p = valid_path.join(path::MAIN_SEPARATOR_STR);
     let contents = fs::read_to_string(p.as_str()).expect(p.as_str());

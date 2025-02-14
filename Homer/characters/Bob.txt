@@ -1,6 +1,6 @@
-<h1 style="text-align: center;">[Character Name]</h1>
+<h1>[Character Name]</h1>
 <p>&nbsp;</p>
-<p>Appearance:</p>
+<p>Appearance:fasfsafasfasfsdf</p>
 <p>Background:</p>
 <p>Lifestyle:</p>
 <p>Interests:</p>

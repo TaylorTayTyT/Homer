@@ -24,7 +24,6 @@ export default function App() {
         // handles the file explorer resize
         function sidebarDrag(e: MouseEvent) {
             const sidebar = document.getElementById("sidebar");
-            console.log(`x-value: ${e.x}\nfurthest right: ${sidebar?.getBoundingClientRect().right}`)
             
             if(!sidebar) return; 
             let barrier = document.querySelector("li[data-first=true] strong div.arrow")?.getBoundingClientRect().right; 
@@ -43,7 +42,6 @@ export default function App() {
         function addCursor(e: MouseEvent){
             //START HERE FIND OUT HOW TO ADD THE CURSOR
             const sidebar = document.getElementById("sidebar");
-            console.log(sidebar?.getBoundingClientRect().right)
             if(!sidebar) return; 
             sidebar.addEventListener("mousemove", (e: MouseEvent) =>{
                 const r = sidebar?.getBoundingClientRect().right
