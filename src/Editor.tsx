@@ -46,7 +46,7 @@ export default function TextEditor({ type, activeFile, activeFileHTML, activeFil
   useEffect(()=>{
     console.log(content)
   }, [content])
-  const tinyMCECSS = 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } #tinymce{margin-left: 10%;width: 80%;} .tox-tinymce:focus {outline: none !important;box-shadow: none !important;}';
+  const tinyMCECSS = 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } p.focus:hover{font-weight: bold;} #tinymce{margin-left: 10%;width: 80%;} .tox-tinymce:focus {outline: none !important;box-shadow: none !important;}';
 
   return (
     <>
@@ -97,6 +97,13 @@ export default function TextEditor({ type, activeFile, activeFileHTML, activeFil
               //adds appropriate action on top of event handlers
               function setEventHandlers() {
                 editor.on('FullscreenStateChanged', (e) => {
+                  console.log('fullscreen toggled')
+                  editor.dom.select('p').forEach(p => p.classList.toggle('focus'))
+                  document.querySelectorAll("#tinymce p").forEach(p =>{
+                    console.log(p)
+                    p.classList.toggle('focus')
+                    //console.log(p.classList.contains('focus'))
+                  })
                   document.querySelectorAll("div[role=menubar]")?.forEach(menubar => {
                     menubar.classList.toggle("disable");
                   })

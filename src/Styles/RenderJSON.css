@@ -10,7 +10,6 @@ ul[data-first="true"]{
 li[data-first="true"]{
     display: block !important;
     border-left: none;
-    cursor: pointer;
 }
 
 /* Basic styling for the file system */
@@ -20,7 +19,6 @@ ul.file-system {
 }
 
 ul.file-system .folder {
-    cursor: pointer;
     margin: 5px 0;
 }
 
@@ -39,10 +37,11 @@ ul.file-system .folder {
 #file_system li .active{
     display: block; 
     border-left: solid 1px black;
-    cursor: pointer;
 }
 
 li strong{
     display: flex;
     align-items: center;
+    cursor: pointer;
+    width: fit-content;
 }
