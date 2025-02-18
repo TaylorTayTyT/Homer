@@ -3,6 +3,7 @@ import "./Styles/Editor.css";
 import { QuillIcon } from './Components/Logos';
 import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useRef, useState } from 'react';
+import { SaveIcon } from './Components/Logos';
 import tinymce from 'tinymce';
 type props = {
   type: string | undefined,
@@ -50,6 +51,7 @@ export default function TextEditor({ type, activeFile, activeFileHTML, activeFil
 
   return (
     <>
+
       <div id='editor' aria-hidden="false">
         <Editor
           apiKey='2j6d39ibmyedqmngituet4cu6t6itq6p5ipd319un1patjk8'
@@ -82,7 +84,7 @@ export default function TextEditor({ type, activeFile, activeFileHTML, activeFil
                   },
                 });
                 editor.ui.registry.addIcon('focus', QuillIcon);
-
+                
                 editor.ui.registry.addButton('save', {
                   text: 'Save',
                   icon: 'save',
@@ -91,7 +93,8 @@ export default function TextEditor({ type, activeFile, activeFileHTML, activeFil
                     editor.execCommand('save');
                   }
                 })
-                editor.ui.registry.addIcon('save', "save")
+                editor.ui.registry.addIcon('save', SaveIcon);
+                //START HEREEEEEEE DOING LOGO SHIT
               }
               
               //adds appropriate action on top of event handlers
