@@ -71,6 +71,21 @@ export default function TextEditor({ type, activeFile, activeFileHTML, activeFil
                     }
                     //console.log(local_path)
                     invoke("insert_into_file", {content: editor.getContent(), path: local_path})
+                    .then((value: any) =>{
+                      let message : string; 
+
+                      if(value === 1){
+                        message = "saved";
+                      } else{
+                        message = "something went wrong while saving";
+                      }
+                      editor.notificationManager.open({
+                        text: message,
+                        type: 'success',
+                        timeout: 3000
+                      })
+                      
+                    });
                 })
               }
               function addCustomButtons() {

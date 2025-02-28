@@ -1,0 +1,6 @@
+#timeline_controls{
+    display: flex;
+}
+#timeline_controls .control{
+    cursor: pointer;
+}

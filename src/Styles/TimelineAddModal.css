@@ -1,0 +1,29 @@
+#timeline_add_modal{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    background-color: antiquewhite;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1rem;
+    border: solid 1px black;
+    width: 40rem;
+    gap: 1rem;
+}
+
+#timeline_add_modal input{
+    height: 1.5rem;
+}
+
+#timeline_add_modal .controls{
+    display: flex;
+    justify-content: space-between;
+}
+
+#timeline_add_modal .control{
+    padding: 0.5rem;
+    border: solid 1px black;
+    cursor: pointer;
+}

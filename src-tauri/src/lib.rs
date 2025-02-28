@@ -35,7 +35,7 @@ fn recursive_directory_traversal() -> Value {
 }
 
 #[tauri::command]
-fn insert_into_file(content: String, path: Vec<&str>) -> Result<(), String> {
+fn insert_into_file(content: String, path: Vec<&str>) -> Result<u8, String> {
     let mut valid_path = vec!["..\\", "Homer"];
     valid_path.extend(path.clone());
 
@@ -47,8 +47,7 @@ fn insert_into_file(content: String, path: Vec<&str>) -> Result<(), String> {
     if let Err(err) = std::fs::write(p.to_string(), content) {
         return Err(format!("Failed to write file: {}", err));
     }
-
-    Ok(())
+    Ok(1)
 }
 
 #[tauri::command]
