@@ -10,18 +10,19 @@ import Instructions from "./Instructions";
 import { EditorState } from "@codemirror/state";
 import { EditorView, keymap } from "@codemirror/view";
 import { defaultKeymap } from "@codemirror/commands";
-import ReactCodeMirror from "@uiw/react-codemirror";
+import ReactCodeMirror, { minimalSetup } from "@uiw/react-codemirror";
 
 export default function App() {
     const [isFullscreen, SetIsFullScreen] = useState(false);
     const [activeFile, SetActiveFile] = useState<string>();
-    const [activeFileHTML, SetActiveFileHTML] = useState<Element>(); 
+    const [activeFileHTML, SetActiveFileHTML] = useState<Element>();
     const [type, SetType] = useState<string>();
     const activeFileRef = useRef(activeFileHTML);
-    
+    const [windowSize, SetWindowSize] = useState(window.innerHeight);
+
     const [value, SetValue] = useState("");
 
-    function editorChanges(value: string){
+    function editorChanges(value: string) {
         SetValue(value);
     }
 
@@ -34,36 +35,36 @@ export default function App() {
     // handles the file explorer resize
     function sidebarDrag() {
         const sidebar = document.getElementById("sidebar");
-        
-        if(!sidebar) return; 
-        let barrier = document.querySelector("li[data-first=true] strong div.arrow")?.getBoundingClientRect().right; 
-        function adjust(e: MouseEvent){
-            if(!sidebar) return; 
+
+        if (!sidebar) return;
+        let barrier = document.querySelector("li[data-first=true] strong div.arrow")?.getBoundingClientRect().right;
+        function adjust(e: MouseEvent) {
+            if (!sidebar) return;
             let newWidth = e.clientX
-            if(!barrier || newWidth < barrier) return; 
+            if (!barrier || newWidth < barrier) return;
             sidebar.style.width = `${newWidth}px`;
         }
         document.addEventListener("mousemove", adjust);
-        document.addEventListener('mouseup', (e) =>{
+        document.addEventListener('mouseup', (e) => {
             document.removeEventListener("mousemove", adjust);
         })
     };
     //makes sure you have pointer when resizing
-    function addCursor(e: MouseEvent){
+    function addCursor(e: MouseEvent) {
         //START HERE FIND OUT HOW TO ADD THE CURSOR
         const sidebar = document.getElementById("sidebar");
-        if(!sidebar) return; 
-        sidebar.addEventListener("mousemove", (e: MouseEvent) =>{
+        if (!sidebar) return;
+        sidebar.addEventListener("mousemove", (e: MouseEvent) => {
             const r = sidebar?.getBoundingClientRect().right
-            if(r - e.x < 16) sidebar.style.cursor = "col-resize";
+            if (r - e.x < 16) sidebar.style.cursor = "col-resize";
             else removeCursor(e)
         })
-        
+
     }
     //removes the pointer when done resizing
-    function removeCursor(e: MouseEvent){
+    function removeCursor(e: MouseEvent) {
         const sidebar = document.getElementById("sidebar");
-        if(!sidebar) return; 
+        if (!sidebar) return;
         sidebar.style.cursor = "auto";
     }
 
@@ -79,12 +80,12 @@ export default function App() {
             extensions: [keymap.of(defaultKeymap)]
         });
         let view = new EditorView({
-            state: startState, 
+            state: startState,
             parent: document.getElementById("editor") as HTMLElement //forces there to be an element with id editor
         })
     }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         activeFileRef.current = activeFileHTML;
     }, [activeFileHTML])
 
@@ -92,11 +93,23 @@ export default function App() {
         <div id="container" data-fullscreen={isFullscreen}>
             <div id="sidebar">
                 <div>
-                    {isFullscreen ? "" : <FileExplorer setActiveFile={SetActiveFile} SetType={SetType} SetActiveFileHTML={SetActiveFileHTML}/>}
+                    {isFullscreen ? "" : <FileExplorer setActiveFile={SetActiveFile} SetType={SetType} SetActiveFileHTML={SetActiveFileHTML} />}
                 </div>
             </div>
             <div id="text_editor">
-                {type === "timeline" ? <Timeline/> : type ? <ReactCodeMirror value="hello" height="200px" onChange={editorChanges}/>  : <Instructions/>}
+                {type === "timeline" ? <Timeline /> : type ? <ReactCodeMirror
+                    value="hello" 
+                    editable={true} 
+                    basicSetup={{
+                        lineNumbers: false, 
+                        foldGutter: false, 
+                        highlightActiveLine: false, 
+                        allowMultipleSelections: false,
+                    }} 
+                    height= {windowSize * 0.9 + "px"}
+                    onChange={editorChanges}
+                    extensions={[EditorView.lineWrapping]}
+                /> : <Instructions />}
             </div>
         </div>
     )
