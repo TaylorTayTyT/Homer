@@ -1,16 +1,16 @@
-import TextEditor from "./Editor";
 import { invoke } from "@tauri-apps/api/core";
 import FileExplorer from "./FileExplorer";
 import "./Styles/App.css"
 import { act, memo, useEffect, useRef, useState } from "react";
 import Timeline from "./Timeline";
-import FullscreenOptions from "./FullScreenOptions";
-import { JSX } from "react";
 import Instructions from "./Instructions";
 import { EditorState } from "@codemirror/state";
 import { EditorView, keymap } from "@codemirror/view";
 import { defaultKeymap } from "@codemirror/commands";
 import ReactCodeMirror, { minimalSetup } from "@uiw/react-codemirror";
+import Icon from "./Icon";
+import { SaveIcon } from "./Components/Logos";
+import {BoldIcon} from "./Components/Logos"
 
 export default function App() {
     const [isFullscreen, SetIsFullScreen] = useState(false);
@@ -89,6 +89,22 @@ export default function App() {
         activeFileRef.current = activeFileHTML;
     }, [activeFileHTML])
 
+    function save(){
+        alert('save');
+        return true;
+    }
+
+    const save_keymap = keymap.of([
+        {
+            key: 'Mod-s',
+            run: () =>{
+                return save();
+            }
+        }
+    ])
+
+    const extensions = [save_keymap, EditorView.lineWrapping]
+
     return (
         <div id="container" data-fullscreen={isFullscreen}>
             <div id="sidebar">
@@ -97,19 +113,32 @@ export default function App() {
                 </div>
             </div>
             <div id="text_editor">
-                {type === "timeline" ? <Timeline /> : type ? <ReactCodeMirror
-                    value="hello" 
-                    editable={true} 
-                    basicSetup={{
-                        lineNumbers: false, 
-                        foldGutter: false, 
-                        highlightActiveLine: false, 
-                        allowMultipleSelections: false,
-                    }} 
-                    height= {windowSize * 0.9 + "px"}
-                    onChange={editorChanges}
-                    extensions={[EditorView.lineWrapping]}
-                /> : <Instructions />}
+                {type === "timeline" ? <Timeline /> : type ?
+                    <div>
+                        <div id = "editor_controls">
+                            <div id="file_control">
+                                <Icon icon={SaveIcon} action={save} description="save"/>
+                            </div>
+                            <div id="basic_text_formatting">
+                                <Icon icon={BoldIcon} action={()=>console.log("bold")}/>
+                            </div>
+                        </div>
+                        <ReactCodeMirror
+                            value="hello"
+                            editable={true}
+                            basicSetup={{
+                                lineNumbers: false,
+                                foldGutter: false,
+                                highlightActiveLine: false,
+                                allowMultipleSelections: false,
+                                defaultKeymap: true,
+                            }}
+                            height={windowSize * 0.9 + "px"}
+                            onChange={editorChanges}
+                            extensions={extensions}
+                            
+                            
+                        /></div> : <Instructions />}
             </div>
         </div>
     )
