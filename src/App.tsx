@@ -9,8 +9,7 @@ import { EditorView, keymap } from "@codemirror/view";
 import { defaultKeymap } from "@codemirror/commands";
 import ReactCodeMirror, { minimalSetup } from "@uiw/react-codemirror";
 import Icon from "./Icon";
-import { SaveIcon } from "./Components/Logos";
-import {BoldIcon} from "./Components/Logos"
+import { SaveIcon, BoldIcon, ItalicsIcon, UnderlineIcon, StrikethroughIcon, FontFamilyIcon, FontSizeIcon, FontColorIcon, HighlighterIcon } from "./Components/Logos";
 
 export default function App() {
     const [isFullscreen, SetIsFullScreen] = useState(false);
@@ -89,7 +88,7 @@ export default function App() {
         activeFileRef.current = activeFileHTML;
     }, [activeFileHTML])
 
-    function save(){
+    function save() {
         alert('save');
         return true;
     }
@@ -97,7 +96,7 @@ export default function App() {
     const save_keymap = keymap.of([
         {
             key: 'Mod-s',
-            run: () =>{
+            run: () => {
                 return save();
             }
         }
@@ -115,12 +114,30 @@ export default function App() {
             <div id="text_editor">
                 {type === "timeline" ? <Timeline /> : type ?
                     <div>
-                        <div id = "editor_controls">
+                        <div id="editor_controls">
                             <div id="file_control">
-                                <Icon icon={SaveIcon} action={save} description="save"/>
+                                <Icon icon={SaveIcon} action={save} description="save" />
                             </div>
                             <div id="basic_text_formatting">
-                                <Icon icon={BoldIcon} action={()=>console.log("bold")}/>
+                                <div className="decoration">
+                                    <Icon icon={BoldIcon} action={() => console.log("bold")} />
+                                    <Icon icon={ItalicsIcon} action={() => console.log("italics")} />
+                                    <Icon icon={UnderlineIcon} action={() => console.log("italics")} />
+                                    <Icon icon={StrikethroughIcon} action={() => console.log("italics")} />
+                                </div>
+                                <div className="fonts">
+                                    <Icon icon={FontFamilyIcon} action={() => console.log("italics")} />
+                                    <Icon icon={FontSizeIcon} action={() => console.log("italics")} />
+                                    <Icon icon={FontColorIcon} action={() => console.log("italics")} />
+                                    <Icon icon={HighlighterIcon} action={() => console.log("italics")} />
+                                </div>
+                            </div>
+                            <div id="paragraph_formatting">
+                                <select title="alignment" name="alignment">
+                                    <option value="left">left</option>
+                                    <option value="center">center</option>
+                                    <option value="right">right</option>
+                                </select>
                             </div>
                         </div>
                         <ReactCodeMirror
@@ -136,8 +153,8 @@ export default function App() {
                             height={windowSize * 0.9 + "px"}
                             onChange={editorChanges}
                             extensions={extensions}
-                            
-                            
+
+
                         /></div> : <Instructions />}
             </div>
         </div>

@@ -25,6 +25,32 @@
   display: flex;
   padding-bottom: 1rem;
 }
+#file_control{
+  padding-right: 0.25rem;
+}
 .icon{
   cursor: pointer;
+}
+#editor_controls svg {
+  max-width: 25px;
+}
+
+#editor_controls img {
+  max-width: 25px;
+}
+#basic_text_formatting{
+  display: flex;
+}
+#basic_text_formatting div{
+  padding-right: 0.25rem;
+}
+#basic_text_formatting .decoration{
+  display: flex;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
+}
+#basic_text_formatting .fonts{
+  display: flex;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
 }
