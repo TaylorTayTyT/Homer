@@ -9,7 +9,10 @@ import { EditorView, keymap } from "@codemirror/view";
 import { defaultKeymap } from "@codemirror/commands";
 import ReactCodeMirror, { minimalSetup } from "@uiw/react-codemirror";
 import Icon from "./Icon";
-import { SaveIcon, BoldIcon, ItalicsIcon, UnderlineIcon, StrikethroughIcon, FontFamilyIcon, FontSizeIcon, FontColorIcon, HighlighterIcon } from "./Components/Logos";
+import { SaveIcon, BoldIcon, ItalicsIcon, UnderlineIcon, StrikethroughIcon, FontFamilyIcon, FontSizeIcon, FontColorIcon, HighlighterIcon, LeftAlignIcon, CenterAlignIcon, RightAlignIcon } from "./Components/Logos";
+import leftAlignIcon from "./Components/photos/left_align.png";
+
+
 
 export default function App() {
     const [isFullscreen, SetIsFullScreen] = useState(false);
@@ -18,6 +21,8 @@ export default function App() {
     const [type, SetType] = useState<string>();
     const activeFileRef = useRef(activeFileHTML);
     const [windowSize, SetWindowSize] = useState(window.innerHeight);
+    const [showAlignmentOptions, SetShowAlignmentOptions] = useState(false);
+    const [alignment, SetAlignment] = useState("left");
 
     const [value, SetValue] = useState("");
 
@@ -133,11 +138,16 @@ export default function App() {
                                 </div>
                             </div>
                             <div id="paragraph_formatting">
-                                <select title="alignment" name="alignment">
-                                    <option value="left">left</option>
-                                    <option value="center">center</option>
-                                    <option value="right">right</option>
-                                </select>
+                                {alignment === "left" ? <Icon icon={LeftAlignIcon} action={()=>SetShowAlignmentOptions(!showAlignmentOptions)} /> : 
+                                    alignment === "center" ? <Icon icon={CenterAlignIcon} action={()=>SetShowAlignmentOptions(!showAlignmentOptions)}/> :
+                                    <Icon icon={RightAlignIcon} action={()=>SetShowAlignmentOptions(!showAlignmentOptions)}/>}
+                                {showAlignmentOptions ? <div style={{display: "flex"}}>
+                                    <Icon icon={LeftAlignIcon} action={()=>{
+                                        SetAlignment("left"); 
+                                        }} />
+                                    <Icon icon={CenterAlignIcon} action={()=>SetAlignment("center")} />
+                                    <Icon icon={RightAlignIcon} action={()=>SetAlignment("right")} />
+                                    </div> : ""}
                             </div>
                         </div>
                         <ReactCodeMirror
@@ -153,8 +163,6 @@ export default function App() {
                             height={windowSize * 0.9 + "px"}
                             onChange={editorChanges}
                             extensions={extensions}
-
-
                         /></div> : <Instructions />}
             </div>
         </div>
