@@ -1,8 +1,5 @@
+Selection deleted
 <h1>[Character Name]</h1>
 <p>&nbsp;</p>
 <p>Appearance:fasfsafasfasfsdf</p>
-<p>Background:</p>
-<p>Lifestyle:</p>
-<p>Interests:</p>
-<p>Relationships:</p>
-<p>Motivations:</p>
+

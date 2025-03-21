@@ -7,12 +7,24 @@ import Instructions from "./Instructions";
 import { EditorState } from "@codemirror/state";
 import { EditorView, keymap } from "@codemirror/view";
 import { defaultKeymap } from "@codemirror/commands";
-import ReactCodeMirror, { minimalSetup } from "@uiw/react-codemirror";
+import ReactCodeMirror, { minimalSetup, ReactCodeMirrorRef } from "@uiw/react-codemirror";
 import Icon from "./Icon";
-import { SaveIcon, BoldIcon, ItalicsIcon, UnderlineIcon, StrikethroughIcon, FontFamilyIcon, FontSizeIcon, FontColorIcon, HighlighterIcon, LeftAlignIcon, CenterAlignIcon, RightAlignIcon } from "./Components/Logos";
-import leftAlignIcon from "./Components/photos/left_align.png";
+import { SaveIcon, BoldIcon, ItalicsIcon, UnderlineIcon, StrikethroughIcon, FontFamilyIcon, FontSizeIcon, FontColorIcon, HighlighterIcon, LeftAlignIcon, CenterAlignIcon, RightAlignIcon, LineSpacingIcon, BulletListIcon, InsertImageIcon } from "./Components/Logos";
 
-
+function findParentFolder(elem: Element | null | undefined, address: string[]) {
+    //NEED TO FIX THIS
+    const parents = ['chapter', 'characters', 'manuscript', 'setting', 'timeline']
+    if (!elem || elem.id === "file_system") return;
+    const bold = elem.querySelector("strong");
+    // console.log(elem)
+    // console.log(bold)
+    // console.log("________________")
+    if (elem.tagName === "LI" && bold) {
+      address.push(bold.innerText.split(".").length == 2 ? bold.innerText : bold.innerText.slice(0, bold.innerText.length - 2));
+    }
+    if (bold && parents.includes(bold.innerText.slice(0, bold.innerText.length - 2))) return address //end condition
+    return findParentFolder(elem.parentElement, address)
+  }
 
 export default function App() {
     const [isFullscreen, SetIsFullScreen] = useState(false);
@@ -23,11 +35,12 @@ export default function App() {
     const [windowSize, SetWindowSize] = useState(window.innerHeight);
     const [showAlignmentOptions, SetShowAlignmentOptions] = useState(false);
     const [alignment, SetAlignment] = useState("left");
-
     const [value, SetValue] = useState("");
+    const editor = useRef<ReactCodeMirrorRef>(null);
 
     function editorChanges(value: string) {
-        SetValue(value);
+        //editor changes
+        
     }
 
     useEffect(() => {
@@ -55,7 +68,6 @@ export default function App() {
     };
     //makes sure you have pointer when resizing
     function addCursor(e: MouseEvent) {
-        //START HERE FIND OUT HOW TO ADD THE CURSOR
         const sidebar = document.getElementById("sidebar");
         if (!sidebar) return;
         sidebar.addEventListener("mousemove", (e: MouseEvent) => {
@@ -78,23 +90,52 @@ export default function App() {
             sidebar.addEventListener("mouseover", addCursor)
             sidebar.addEventListener("mousedown", sidebarDrag);
         }
-
-        let startState = EditorState.create({
-            doc: "Hello World",
-            extensions: [keymap.of(defaultKeymap)]
-        });
-        let view = new EditorView({
-            state: startState,
-            parent: document.getElementById("editor") as HTMLElement //forces there to be an element with id editor
-        })
     }, []);
 
     useEffect(() => {
         activeFileRef.current = activeFileHTML;
-    }, [activeFileHTML])
+    }, [activeFileHTML]);
+
+    useEffect(()=>{
+        retrieve_content()
+        .then(res => {
+            let transaction = editor.current?.view?.state.update({changes:{
+                from: 0, 
+                to: editor.current.view.state.doc.length,
+                insert: res
+            }});
+            if(transaction) editor.current?.view?.dispatch(transaction)
+        })
+    }, [activeFile])
+
+    async function retrieve_content(){
+        let local_path = findParentFolder(activeFileHTML, [activeFile ? activeFile : ""]);
+        if(local_path) {
+            local_path = local_path.reverse();
+            local_path.pop(); 
+            const saved_content: string = await invoke("read_from_file", {path: local_path});
+            return saved_content
+          }
+    }
 
     function save() {
-        alert('save');
+        const currDocumentText = editor.current?.editor?.innerText;
+        let local_path = findParentFolder(activeFileHTML, [activeFile ? activeFile : ""]);
+        if(local_path) {
+            local_path = local_path.reverse();
+            local_path.pop(); 
+            invoke("insert_into_file", {content: currDocumentText, path: local_path})
+            .then((value: any) =>{
+                let message : string; 
+
+                if(value === 1){
+                  message = "saved";
+                } else{
+                  message = "something went wrong while saving";
+                }
+                console.log(message)
+              });
+          }
         return true;
     }
 
@@ -124,34 +165,35 @@ export default function App() {
                                 <Icon icon={SaveIcon} action={save} description="save" />
                             </div>
                             <div id="basic_text_formatting">
-                                <div className="decoration">
-                                    <Icon icon={BoldIcon} action={() => console.log("bold")} />
-                                    <Icon icon={ItalicsIcon} action={() => console.log("italics")} />
-                                    <Icon icon={UnderlineIcon} action={() => console.log("italics")} />
-                                    <Icon icon={StrikethroughIcon} action={() => console.log("italics")} />
-                                </div>
-                                <div className="fonts">
-                                    <Icon icon={FontFamilyIcon} action={() => console.log("italics")} />
-                                    <Icon icon={FontSizeIcon} action={() => console.log("italics")} />
-                                    <Icon icon={FontColorIcon} action={() => console.log("italics")} />
-                                    <Icon icon={HighlighterIcon} action={() => console.log("italics")} />
-                                </div>
+                                <Icon icon={BoldIcon} action={() => console.log("bold")} />
+                                <Icon icon={ItalicsIcon} action={() => console.log("italics")} />
+                                <Icon icon={UnderlineIcon} action={() => console.log("italics")} />
+                                <Icon icon={StrikethroughIcon} action={() => console.log("italics")} />
+
+                                <Icon icon={FontFamilyIcon} action={() => console.log("italics")} />
+                                <Icon icon={FontSizeIcon} action={() => console.log("italics")} />
+                                <Icon icon={FontColorIcon} action={() => console.log("italics")} />
+                                <Icon icon={HighlighterIcon} action={() => console.log("italics")} />
                             </div>
                             <div id="paragraph_formatting">
-                                {alignment === "left" ? <Icon icon={LeftAlignIcon} action={()=>SetShowAlignmentOptions(!showAlignmentOptions)} /> : 
-                                    alignment === "center" ? <Icon icon={CenterAlignIcon} action={()=>SetShowAlignmentOptions(!showAlignmentOptions)}/> :
-                                    <Icon icon={RightAlignIcon} action={()=>SetShowAlignmentOptions(!showAlignmentOptions)}/>}
-                                {showAlignmentOptions ? <div style={{display: "flex"}}>
-                                    <Icon icon={LeftAlignIcon} action={()=>{
-                                        SetAlignment("left"); 
-                                        }} />
-                                    <Icon icon={CenterAlignIcon} action={()=>SetAlignment("center")} />
-                                    <Icon icon={RightAlignIcon} action={()=>SetAlignment("right")} />
-                                    </div> : ""}
+                                {alignment === "left" ? <Icon icon={LeftAlignIcon} action={() => SetShowAlignmentOptions(!showAlignmentOptions)} /> :
+                                    alignment === "center" ? <Icon icon={CenterAlignIcon} action={() => SetShowAlignmentOptions(!showAlignmentOptions)} /> :
+                                        <Icon icon={RightAlignIcon} action={() => SetShowAlignmentOptions(!showAlignmentOptions)} />}
+                                {showAlignmentOptions ? <div style={{ display: "flex" }}>
+                                    <Icon icon={LeftAlignIcon} action={() => {
+                                        SetAlignment("left");
+                                    }} />
+                                    <Icon icon={CenterAlignIcon} action={() => SetAlignment("center")} />
+                                    <Icon icon={RightAlignIcon} action={() => SetAlignment("right")} />
+                                </div> : ""}
+                                <Icon icon={LineSpacingIcon} action={() => console.log('hi')} />
+                                <Icon icon={BulletListIcon} action={() => console.log('hi')} />
+                                <Icon icon={InsertImageIcon} action={() => console.log('hi')} />
                             </div>
                         </div>
                         <ReactCodeMirror
-                            value="hello"
+                        ref={editor}
+                            value=""
                             editable={true}
                             basicSetup={{
                                 lineNumbers: false,

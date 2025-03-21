@@ -11,8 +11,6 @@
   border-right: solid 1px black;
   padding-right: 1rem;
 }
-
-
 #text_editor{
   flex-grow: 2;
   overflow-y: scroll;
@@ -24,6 +22,7 @@
 #editor_controls{
   display: flex;
   padding-bottom: 1rem;
+  gap: 1rem;
 }
 #file_control{
   padding-right: 0.25rem;
@@ -45,8 +44,7 @@
   display: flex;
 }
 #editor_controls > div{
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
+  gap: 0.25rem;
 }
 #basic_text_formatting .decoration{
   display: flex;
@@ -55,7 +53,6 @@
 }
 #basic_text_formatting .fonts{
   display: flex;
-  border-left: solid 1px black;
   border-right: solid 1px black;
 }
 
