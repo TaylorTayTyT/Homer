@@ -39,7 +39,6 @@ export default function App() {
     const editor = useRef<ReactCodeMirrorRef>(null);
 
     function editorChanges(value: string) {
-        //editor changes
         
     }
 
@@ -119,8 +118,10 @@ export default function App() {
     }
 
     function save() {
-        const currDocumentText = editor.current?.editor?.innerText;
+        console.log(editor.current?.editor?.innerText)
+        const currDocumentText = editor.current?.editor?.innerText; //idk why it keeps saying selection deleted
         let local_path = findParentFolder(activeFileHTML, [activeFile ? activeFile : ""]);
+        console.log(currDocumentText)
         if(local_path) {
             local_path = local_path.reverse();
             local_path.pop(); 
@@ -134,8 +135,10 @@ export default function App() {
                   message = "something went wrong while saving";
                 }
                 console.log(message)
+
               });
           }
+        
         return true;
     }
 

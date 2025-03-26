@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { MouseEventHandler, useState } from "react";
 import { AddIcon, SubtractIcon } from "./Components/Logos";
 import { Chrono } from "react-chrono";
 import "./Styles/Timeline.css";
 import TimelineAddModal from "./TimelineAddModal";
+import TimelineEvent from "./Components/TimelineEvent";
 
 export default function Timeline() {
     // State to manage the items
@@ -37,18 +38,46 @@ export default function Timeline() {
         SetItems(updatedItems);
     };
 
+    function moveBalls(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+        function mouseUpClean(eMouse: MouseEvent) {
+            eMouse.target?.removeEventListener('mousemove', adjust);
+            eMouse.target?.removeEventListener('mouseup', mouseUpClean);
+            const ball = e.target as HTMLDivElement;
+            ball.style.zIndex = "1";
+        };
+        function adjust(eMouse: MouseEvent) {
+            //moves the timeline
+            const ball = eMouse.target as HTMLDivElement;
+            console.log(ball)
+            const ballPosition = ball.getBoundingClientRect().x
+            console.log(ball.style)
+            let currentPosition = ball.style.transform.match(/[0-9]+.[0-9]+|[0-9]+/gm);
+            console.log(currentPosition)
+            if(!currentPosition || currentPosition.length < 1) currentPosition = ['0']; 
+            ball.style.transform = `translateX(${parseFloat(currentPosition[0]) + eMouse.x - ballPosition - ball.getBoundingClientRect().width / 2}px)`;
+            console.log(ball.style.transform)
+        }
+        e.preventDefault();
+        if (!e) return
+        console.log(e.currentTarget)
+        e.currentTarget.style.zIndex = "10000";
+        e.currentTarget.addEventListener('mousemove', adjust)
+        e.currentTarget.addEventListener('mouseup', mouseUpClean)
+        e.currentTarget.addEventListener('mouseleave', mouseUpClean)
+    }
+
     return (
-        <div>
+        <>
             {/* Buttons to dynamically edit the timeline */}
-            <div id="timeline_controls">
-                <div dangerouslySetInnerHTML={{ __html: AddIcon }} onClick={()=>SetTimelineAddModal(true)} className="control"></div>
-                <div dangerouslySetInnerHTML={{ __html: SubtractIcon }} onClick={removeItem} className="control"></div>
+
+            <div id="timeline_container">
+                
+                <div className="event" onMouseDown={(e) => moveBalls(e)}></div>
+                <div className="event" onMouseDown={(e) => moveBalls(e)}></div>
+                <div className="event" onMouseDown={(e) => console.log('mousedown')}></div>
+                <div className="event" onMouseDown={(e) => console.log('mousedown')}></div>
+                <div id = "timeline_line"></div>
             </div>
-
-            {timelineAddModal ? <TimelineAddModal addItem={addItem} SetTimelineAddModal={SetTimelineAddModal}/> : ""}
-
-            {/* Render the Chrono component with the current items */}
-            <Chrono key={items.length} items={items} mode="VERTICAL" />
-        </div>
+        </>
     );
 }
